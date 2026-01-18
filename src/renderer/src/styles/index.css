@@ -1,0 +1,288 @@
+/* Global Reset & Font */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  overflow: hidden;
+  /* No scrollbars on main body */
+  height: 100vh;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Factorio Panel Style */
+.factorio-panel {
+  background-color: #2e2e2e;
+  border: 2px solid #5d5d5d;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  position: relative;
+}
+
+/* Add corner screw detail simulation */
+.factorio-panel::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  background: #111;
+  border-radius: 50%;
+  box-shadow: 0 0 2px #fff;
+}
+
+.factorio-panel::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 6px;
+  height: 6px;
+  background: #111;
+  border-radius: 50%;
+  box-shadow: 0 0 2px #fff;
+}
+
+/* Status Lights */
+.status-light {
+  position: relative;
+  box-shadow: 0 0 5px currentColor;
+}
+
+.status-light.connected {
+  background-color: #57d657;
+  color: #57d657;
+}
+
+.status-light.connecting {
+  background-color: #d6ce57;
+  color: #d6ce57;
+  animation: blink 1s infinite;
+}
+
+.status-light.disconnected {
+  background-color: #d65757;
+  color: #d65757;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"] {
+  background-color: #111;
+  border: 1px solid #e38800;
+  padding: 8px;
+  color: #fff;
+  font-family: inherit;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 5px #e38800;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, #e38800 0%, #aa6600 100%);
+  border: 1px solid #ffaa00;
+  color: #fff;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 1px 1px 0px #000;
+  transition: filter 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.2);
+}
+
+.btn-primary:active {
+  filter: brightness(0.9);
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  background: #555;
+  border-color: #777;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+/* LCD Screen Effect */
+.lcd-screen {
+  font-family: 'Courier New', Courier, monospace;
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 2px, 3px 100%;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.33);
+    opacity: 0;
+    border-width: 3px;
+  }
+
+  50% {
+    opacity: 1;
+    border-width: 1px;
+  }
+
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+    border-width: 0px;
+  }
+}
+
+.signal-tower {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  border: 2px solid #555;
+  transition: all 0.5s ease;
+}
+
+.signal-tower.active {
+  border-color: #57d657;
+}
+
+.signal-tower.inactive {
+  border-color: #d65757;
+}
+
+.signal-tower.active::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #57d657;
+  border-radius: 50%;
+  animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.signal-tower.active::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #57d657;
+  border-radius: 50%;
+  animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  animation-delay: 1.5s;
+}
+
+.signal-icon {
+  font-size: 3em;
+  z-index: 2;
+  color: #555;
+  transition: all 0.5s ease;
+}
+
+.signal-tower.active .signal-icon {
+  color: #fff;
+  text-shadow: 0 0 10px #57d657;
+}
+
+.signal-tower.inactive .signal-icon {
+  color: #d65757;
+  text-shadow: none;
+}
+
+.led-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #252525;
+  border-bottom: 1px solid #333;
+  width: 100%;
+}
+
+.led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #333;
+  box-shadow: inset 0 0 2px #000;
+  border: 1px solid #111;
+  transition: all 0.3s ease;
+}
+
+.led.green {
+  background-color: #57d657;
+  box-shadow: 0 0 5px #57d657;
+}
+
+.led.red {
+  background-color: #d65757;
+  box-shadow: 0 0 5px #d65757;
+}
+
+.led.yellow {
+  background-color: #d6ce57;
+  box-shadow: 0 0 5px #d6ce57;
+}
+/* Modal Styles */
+.modal-overlay {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    background-color: rgba(0,0,0,0.8);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative; 
+    width: 600px; 
+    background: #222; 
+    padding: 20px; 
+    border: 2px solid #e38800;
+    box-shadow: 0 0 20px rgba(227, 136, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.modal-close {
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    background: none; 
+    border: none; 
+    color: #fff; 
+    cursor: pointer;
+    font-size: 1.2em;
+}
+.modal-close:hover { color: #e38800; }

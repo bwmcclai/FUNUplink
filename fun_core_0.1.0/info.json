@@ -1,0 +1,13 @@
+{
+    "name": "fun_core",
+    "version": "0.1.0",
+    "title": "FUN Core",
+    "author": "Brian McClain",
+    "contact": "",
+    "homepage": "",
+    "description": "Integration layer for the Factorio Unified Network sidecar application.",
+    "factorio_version": "2.0",
+    "dependencies": [
+        "base >= 2.0"
+    ]
+}
