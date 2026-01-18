@@ -33,8 +33,9 @@ export interface IpcApi {
     removeListeners: () => void
 
     // Auth
-    login: (creds: AuthCredentials) => Promise<{ error: string | null, user: any | null }>
+    login: (creds: AuthCredentials) => Promise<{ user: any, error: any }>
     logout: () => Promise<void>
+    getSession: () => Promise<any>
 
     // Mod
     installMod: (customPath?: string) => Promise<{ success: boolean, message: string }>

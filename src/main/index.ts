@@ -39,12 +39,18 @@ function createWindow(): void {
     if (process.env.VITE_DEV_SERVER_URL) {
         mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
     } else {
-        mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+        mainWindow.loadFile(join(__dirname, '../dist/index.html'))
     }
 }
 
 app.whenReady().then(() => {
     createWindow()
+
+    // IPC Handler for getting session
+    ipcMain.handle('auth-get-session', async () => {
+        const { data } = await supabase.auth.getSession()
+        return data.session
+    })
 
     // IPC Handler for RCON Connection
     ipcMain.handle('connect-rcon', async (_event, config) => {
@@ -281,6 +287,52 @@ app.whenReady().then(() => {
         const modInstalled = fs.existsSync(join(modsPath, 'fun_core_0.1.0.zip')) || fs.existsSync(join(modsPath, 'fun_core_0.1.0'))
 
         return { installed, path: factorioPath, modInstalled }
+    })
+
+    // IPC Handler for Downloading Mod
+    ipcMain.handle('download-mod', async () => {
+        try {
+            const { dialog } = require('electron')
+
+            // Find source mod folder/zip
+            let source = join(app.getAppPath(), '../../fun_core_0.1.0')
+            if (!fs.existsSync(source)) {
+                source = join(process.cwd(), 'fun_core_0.1.0')
+            }
+
+            if (!fs.existsSync(source)) {
+                throw new Error('Mod source not found')
+            }
+
+            // Show save dialog
+            const result = await dialog.showSaveDialog(mainWindow!, {
+                title: 'Save fun_core Mod',
+                defaultPath: 'fun_core_0.1.0.zip',
+                filters: [{ name: 'Zip Files', extensions: ['zip'] }]
+            })
+
+            if (result.canceled || !result.filePath) {
+                return { success: false, message: 'Download canceled' }
+            }
+
+            // Create zip
+            const output = fs.createWriteStream(result.filePath)
+            const archive = archiver('zip', { zlib: { level: 9 } })
+
+            return new Promise((resolve, reject) => {
+                output.on('close', () => {
+                    resolve({ success: true, message: `Mod downloaded to ${result.filePath}` })
+                })
+                archive.on('error', (err: any) => reject({ success: false, message: err.message }))
+
+                archive.pipe(output)
+                archive.directory(source, 'fun_core_0.1.0')
+                archive.finalize()
+            })
+        } catch (error: any) {
+            console.error('Download error:', error)
+            return { success: false, message: error.message }
+        }
     })
 
     app.on('activate', () => {

@@ -61,6 +61,18 @@ const ServerDetailView: React.FC<ServerDetailViewProps> = ({
         setLoading(false)
     }
 
+    const handleDownloadMod = async () => {
+        // @ts-ignore
+        if (!window.context) return
+
+        try {
+            // @ts-ignore
+            await window.context.downloadMod()
+        } catch (error) {
+            console.error('Failed to download mod:', error)
+        }
+    }
+
     if (!connection) {
         return (
             <div className="factorio-panel" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -165,26 +177,59 @@ const ServerDetailView: React.FC<ServerDetailViewProps> = ({
                     </div>
                 ) : null}
 
-                {!isLocal && isConnected && (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <button
-                            className="btn-primary"
-                            onClick={onRestartServer}
-                            style={{
-                                flex: 1,
-                                background: 'linear-gradient(180deg, #e38800 0%, #aa6600 100%)'
-                            }}
-                        >
-                            Restart Server
-                        </button>
-                        <button
-                            className="btn-primary"
-                            onClick={onDisconnect}
-                            style={{ flex: 1, background: '#666' }}
-                        >
-                            Disconnect
-                        </button>
-                    </div>
+                {!isLocal && (
+                    <>
+                        {/* Remote Server Instructions */}
+                        <div style={{
+                            marginBottom: '15px',
+                            padding: '15px',
+                            background: '#1a1a1a',
+                            border: '1px solid #444',
+                            borderRadius: '4px'
+                        }}>
+                            <h4 style={{ margin: '0 0 10px 0', color: '#e38800', fontSize: '0.9em' }}>
+                                ⚠️ REMOTE MOD INSTALLATION REQUIRED
+                            </h4>
+                            <p style={{ margin: '0 0 10px 0', fontSize: '0.85em', color: '#ccc' }}>
+                                To sync with this server, install <code style={{ background: '#333', padding: '2px 6px', borderRadius: '2px' }}>fun_core</code> mod:
+                            </p>
+                            <ol style={{ margin: '0 0 10px 0', paddingLeft: '20px', fontSize: '0.85em', color: '#ccc', lineHeight: '1.6' }}>
+                                <li>Download the mod using button below</li>
+                                <li>Upload <code style={{ background: '#333', padding: '2px 6px', borderRadius: '2px' }}>fun_core_0.1.0.zip</code> to your server's <code style={{ background: '#333', padding: '2px 6px', borderRadius: '2px' }}>mods/</code> folder</li>
+                                <li>Restart the Factorio server</li>
+                            </ol>
+                            <button
+                                onClick={handleDownloadMod}
+                                className="btn-primary"
+                                style={{ width: '100%', marginBottom: '10px' }}
+                            >
+                                ⬇️ Download fun_core Mod
+                            </button>
+                        </div>
+
+                        {/* Server Controls */}
+                        {isConnected && (
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <button
+                                    className="btn-primary"
+                                    onClick={onRestartServer}
+                                    style={{
+                                        flex: 1,
+                                        background: 'linear-gradient(180deg, #e38800 0%, #aa6600 100%)'
+                                    }}
+                                >
+                                    Restart Server
+                                </button>
+                                <button
+                                    className="btn-primary"
+                                    onClick={onDisconnect}
+                                    style={{ flex: 1, background: '#666' }}
+                                >
+                                    Disconnect
+                                </button>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
